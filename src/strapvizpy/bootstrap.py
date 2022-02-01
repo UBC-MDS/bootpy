@@ -3,7 +3,7 @@ import pandas as pd
 import warnings
 
 
-SUPPORTED_ESTIMATORS = {
+_SUPPORTED_ESTIMATORS = {
     "mean": np.mean,
     "median": np.median,
     "var": np.var,
@@ -65,7 +65,7 @@ def bootstrap_distribution(sample, rep, n="auto", estimator="mean", random_seed=
     if not isinstance(estimator, str):
         raise TypeError("estimator should be of type 'str'")
 
-    if estimator not in SUPPORTED_ESTIMATORS.keys():
+    if estimator not in _SUPPORTED_ESTIMATORS.keys():
         raise ValueError("Supported estimators are mean, median, var, sd")
 
     if not (random_seed is None or isinstance(random_seed, int)):
@@ -80,7 +80,7 @@ def bootstrap_distribution(sample, rep, n="auto", estimator="mean", random_seed=
     if n == "auto":
         n = len(sample)
 
-    return SUPPORTED_ESTIMATORS[estimator](
+    return _SUPPORTED_ESTIMATORS[estimator](
         np.random.choice(sample, size=(rep, n), replace=True),
         axis=1
     )
@@ -155,7 +155,7 @@ def calculate_boot_stats(sample, rep, n="auto", level=0.95, estimator="mean", ra
 
     stats_dict["lower"] = np.percentile(dist, 100 * (1-level)/2)
     stats_dict["upper"] = np.percentile(dist, 100 * (1-(1-level)/2))
-    stats_dict["sample_" + estimator] = SUPPORTED_ESTIMATORS[estimator](sample)
+    stats_dict["sample_" + estimator] = _SUPPORTED_ESTIMATORS[estimator](sample)
     stats_dict["std_err"] = np.std(dist)
     stats_dict["level"] = level
     stats_dict["sample_size"] = len(sample)
