@@ -113,7 +113,7 @@ def plot_ci(sample, rep, bin_size=30, n="auto", ci_level=0.95,
 def tabulate_stats(stat, precision=2, estimator=True, alpha=True, path=None):
     """Makes two tables that summerize the statistics from the bootstrapped 
     samples and the parameters for creating the bootstrapped samples. It also allows you
-    to save the tables in html format. 
+    to save the tables in latex format.
 
 
     Parameters
