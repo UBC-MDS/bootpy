@@ -2,13 +2,16 @@ import numpy as np
 import pandas as pd
 import warnings
 
-# Global constant for supported estimators
+
 SUPPORTED_ESTIMATORS = {
     "mean": np.mean,
     "median": np.median,
     "var": np.var,
     "sd": np.std
 }
+"""
+dict : Supported estimators for bootstrapping
+"""
 
 def bootstrap_distribution(sample, rep, n="auto", estimator="mean", random_seed=None):
     """Bootstraps a sampling distribution for a sample.

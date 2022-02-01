@@ -30,7 +30,7 @@ def test_plot_ci():
         plot_ci([1, 2, 3, 4, 5, 6, 7], 
                 1000, 
                 n=100, 
-                ci_level=0.95, 
+                level=0.95, 
                 title=123)
     assert str(e.value) == (
         "The value of the argument 'title' must be type of str."
@@ -41,32 +41,10 @@ def test_plot_ci():
         plot_ci([1, 2, 3, 4, 5, 6, 7], 
                 1000, 
                 n=100, 
-                ci_level=0.95, 
+                level=0.95, 
                 title=True)
     assert str(e.value) == (
         "The value of the argument 'title' must be type of str."
-    )
-    
-    # tests with invalid input type of x_axis
-    with raises(TypeError) as e:
-        plot_ci([1, 2, 3, 4, 5, 6, 7], 
-                1000, 
-                n=100, 
-                ci_level=0.95, 
-                x_axis=123)
-    assert str(e.value) == (
-        "The value of the argument 'x_axis' must be type of str."
-    )
-    
-    # tests with invalid input type of x_axis
-    with raises(TypeError) as e:
-        plot_ci([1, 2, 3, 4, 5, 6, 7], 
-                1000, 
-                n=100, 
-                ci_level=0.95, 
-                x_axis=True)
-    assert str(e.value) == (
-        "The value of the argument 'x_axis' must be type of str."
     )
     
     # tests with invalid input type of y_axis
@@ -74,7 +52,7 @@ def test_plot_ci():
         plot_ci([1, 2, 3, 4, 5, 6, 7], 
                 1000, 
                 n=100, 
-                ci_level=0.95, 
+                level=0.95, 
                 y_axis=123)
     assert str(e.value) == (
         "The value of the argument 'y_axis' must be type of str."
@@ -85,7 +63,7 @@ def test_plot_ci():
         plot_ci([1, 2, 3, 4, 5, 6, 7], 
                 1000, 
                 n=100, 
-                ci_level=0.95, 
+                level=0.95, 
                 y_axis=True)
     assert str(e.value) == (
         "The value of the argument 'y_axis' must be type of str."
@@ -96,7 +74,7 @@ def test_plot_ci():
         plot_ci([1, 2, 3, 4, 5, 6, 7], 
                 1000, 
                 n=100, 
-                ci_level=0.95, 
+                level=0.95, 
                 y_axis="", 
                 path=0.5)
     assert str(e.value) == (
@@ -106,18 +84,23 @@ def test_plot_ci():
     #tests if a plot was drawn by the function
     histogram = plot_ci([1, 2, 3, 4, 5, 6, 7], 1000, 
                          n=100, 
-                         ci_level=0.95, 
-                         ci_random_seed=123,
+                         level=0.95, 
+                         random_seed=123,
                          title="Bootstrap",
                          path="./tests/")
     assert histogram.gcf().number > 0, "Chart was not created correctly"
 
     # tests with invalid input value of path
     with raises(NameError) as e:
-        plot_ci([1, 2, 3, 4, 5, 6, 7], 1000, path="Users/")
+        plot_ci([1, 2, 3, 4, 5, 6, 7], 1000, path="Users/", estimator="median")
     assert str(e.value) == (
         "The folder path you specified is invalid."
     )
+
+    # tests with invalid input value of estimator
+    with raises(ValueError) as e:
+        plot_ci([1, 2, 3, 4], 1000, n=100, level=0.95, estimator="outliers")
+    assert str(e.value) == "Supported estimators are mean, median, var, sd"
 
 
 def test_table_outputs():

@@ -5,9 +5,8 @@ import pandas as pd
 from strapvizpy.bootstrap import calculate_boot_stats
 
 
-def plot_ci(sample, rep, bin_size=30, n="auto", ci_level=0.95,
-            ci_random_seed=None, title="", x_axis="Bootstrap Sample Mean", 
-            y_axis="Count", path=None):
+def plot_ci(sample, rep, bin_size=30, estimator="mean" ,n="auto", level=0.95,
+            random_seed=None, title="", y_axis="Count", path=None):
     
     """Makes a histogram of a boostrapped sampling distribution 
     with its confidence interval and oberserved mean.
@@ -21,17 +20,17 @@ def plot_ci(sample, rep, bin_size=30, n="auto", ci_level=0.95,
     bin_size = int
         a number of bins representing intervals of equal size
         over the range
+    estimator: {"mean", "median", "var", "sd"}
+        sampling distributor's estimator
     n : str or int, default="auto"
         bootstrap sample size, "auto" specifies using the
         same size as the sample
-    ci_level : float, default=0.95
+    level : float, default=0.95
         confidence level
-    ci_random_seed : None or int, default=None
+    random_seed : None or int, default=None
         seed for random state
     title : str, default = ""
         title of the histogram
-    x_axis : str, default = "Bootstrap Sample Mean"
-        name of the x axis
     y_axis : str, default = "Count"
         name of the y axis
     path : None or str, default = None
@@ -45,18 +44,13 @@ def plot_ci(sample, rep, bin_size=30, n="auto", ci_level=0.95,
     
     Examples
     --------
-    >>> plot_ci([1, 2, 3, 4, 5, 6, 7], 1000, n=100, ci_level=0.95,
-                ci_random_seed=123, title="Bootstrap")
+    >>> plot_ci([1, 2, 3, 4, 5, 6, 7], 1000, n=100, level=0.95,
+                random_seed=123, title="Bootstrap")
     """
 
     if not isinstance(title, str):
         raise TypeError(
             "The value of the argument 'title' must be type of str."
-        )
-        
-    if not isinstance(x_axis, str):
-        raise TypeError(
-            "The value of the argument 'x_axis' must be type of str."
         )
         
     if not isinstance(y_axis, str):
@@ -72,20 +66,24 @@ def plot_ci(sample, rep, bin_size=30, n="auto", ci_level=0.95,
     if path is not None :
         if os.path.isdir(path) is False:
             raise NameError("The folder path you specified is invalid.")
+    
+    if estimator not in {"mean", "median", "var", "sd"}:
+        raise ValueError("Supported estimators are mean, median, var, sd")
 
-    sample_stat_dict = calculate_boot_stats(sample, rep, level=ci_level, 
-                                            n=n, random_seed = ci_random_seed,
+    sample_stat_dict = calculate_boot_stats(sample, rep, level=level, 
+                                            n=n, estimator=estimator,
+                                            random_seed=random_seed,
                                             pass_dist=True)
         
     plt.hist(sample_stat_dict[1], density=False, bins=bin_size)
     plt.axvline(sample_stat_dict[0]["lower"], color='k', linestyle='--')
-    plt.axvline(sample_stat_dict[0]["sample_mean"], color='r', linestyle='-')
+    plt.axvline(sample_stat_dict[0]["sample_"+estimator], color='r', linestyle='-')
     plt.axvline(sample_stat_dict[0]["upper"], color='k', linestyle='--')
     axes = plt.gca()
     _, y_max = axes.get_ylim()
-    plt.text(sample_stat_dict[0]["sample_mean"], 
+    plt.text(sample_stat_dict[0]["sample_"+estimator], 
              y_max * 0.9 , 
-             (str(round(sample_stat_dict[0]["sample_mean"], 2))+
+             (str(round(sample_stat_dict[0]["sample_"+estimator], 2))+
               '('+u"\u00B1"+str(round(sample_stat_dict[0]['std_err'],2))+')'), 
              ha='center', va='center',rotation='horizontal', 
              color = "k", bbox={'facecolor':'white', 'pad':5})
@@ -100,7 +98,7 @@ def plot_ci(sample, rep, bin_size=30, n="auto", ci_level=0.95,
              ha='center', va='center',rotation='horizontal', 
              color = "k", bbox={'facecolor':'white', 'pad':5})
     plt.title(title)
-    plt.xlabel(x_axis)
+    plt.xlabel("Bootstrap sample "+estimator)
     plt.ylabel(y_axis)
 
     if path is not None:
@@ -113,7 +111,7 @@ def plot_ci(sample, rep, bin_size=30, n="auto", ci_level=0.95,
 def tabulate_stats(stat, precision=2, estimator=True, alpha=True, path=None):
     """Makes two tables that summerize the statistics from the bootstrapped 
     samples and the parameters for creating the bootstrapped samples. It also allows you
-    to save the tables in html format. 
+    to save the tables in latex format.
 
 
     Parameters
