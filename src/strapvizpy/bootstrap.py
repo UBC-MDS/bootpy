@@ -3,12 +3,15 @@ import pandas as pd
 import warnings
 
 
-_SUPPORTED_ESTIMATORS = {
+SUPPORTED_ESTIMATORS = {
     "mean": np.mean,
     "median": np.median,
     "var": np.var,
     "sd": np.std
 }
+"""
+dict : Supported estimators for bootstrapping
+"""
 
 def bootstrap_distribution(sample, rep, n="auto", estimator="mean", random_seed=None):
     """Bootstraps a sampling distribution for a sample.
@@ -80,7 +83,7 @@ def bootstrap_distribution(sample, rep, n="auto", estimator="mean", random_seed=
     if n == "auto":
         n = len(sample)
 
-    return _SUPPORTED_ESTIMATORS[estimator](
+    return SUPPORTED_ESTIMATORS[estimator](
         np.random.choice(sample, size=(rep, n), replace=True),
         axis=1
     )
