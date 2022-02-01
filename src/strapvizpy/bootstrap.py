@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import warnings
 
-# Global constant for supported estimators
+
 SUPPORTED_ESTIMATORS = {
     "mean": np.mean,
     "median": np.median,
