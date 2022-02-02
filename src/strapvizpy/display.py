@@ -192,7 +192,7 @@ def tabulate_stats(stat, precision=2, estimator=True, alpha=True, path=None):
                                "Standard Error"])
 
     if estimator is True:
-        s_name = "Sample " + stat["estimator"]
+        s_name = "Sample " + stat["estimator"].capitalize()
         df[s_name] = stat["sample_" + stat["estimator"]]
 
     if alpha is True:

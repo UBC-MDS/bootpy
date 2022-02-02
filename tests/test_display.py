@@ -136,7 +136,7 @@ def test_table_outputs():
                               level=0.95, random_seed=123, n=10,
                               estimator="median")
     s, bs = tabulate_stats(st)
-    assert ("Sample median" in s.data.columns), "Test Statistic name incorrect"
+    assert ("Sample Median" in s.data.columns), "Test Statistic name incorrect"
     
     
 def test_table_errors():
